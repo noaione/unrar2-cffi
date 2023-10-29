@@ -12,6 +12,7 @@ on:
 
 env:
   UNRAR_VERSION: 6.2.8
+  UNRAR_REV: df15c8c3c9f4105d3501bc477e80ac6b8e227677
 
 jobs:
   build_sdist:
@@ -26,10 +27,7 @@ jobs:
 
       - name: Set up unrar
         run: |
-          mkdir -p unrarsrc
-          curl -L https://www.rarlab.com/rar/unrarsrc-${UNRAR_VERSION}.tar.gz -o unrar.tar.gz
-          tar -xzf unrar.tar.gz -C unrarsrc --strip-components=1
-          rm unrar.tar.gz
+          git clone https://github.com/pmachapman/unrar.git@${UNRAR_REV} unrarsrc
 
       - name: Check metadata
         run: "python setup.py check"
@@ -60,9 +58,11 @@ jobs:
             python: "pp39"
           - buildplat: [ ubuntu-20.04, musllinux_x86_64 ]
             python: "pp39"
+
     runs-on: ${{ matrix.buildplat[0] }}
     env:
       IS_32_BIT: ${{ matrix.buildplat[1] == 'win32' }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -86,19 +86,16 @@ jobs:
 
       - name: Set up unrar
         run: |
-          mkdir -p unrarsrc
-          curl -L https://www.rarlab.com/rar/unrarsrc-${UNRAR_VERSION}.tar.gz -o unrar.tar.gz
-          tar -xzf unrar.tar.gz -C unrarsrc --strip-components=1
-          rm unrar.tar.gz
+          git clone https://github.com/pmachapman/unrar.git@${UNRAR_REV} unrarsrc
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.12.1
-      
-      - name: Upload wheels
-        uses: actions/upload-artifact@v3
         env:
           CIBW_PRERELEASE_PYTHONS: True
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
+      
+      - name: Upload wheels
+        uses: actions/upload-artifact@v3
         with:
           name: unrar2-cffi
           path: |
