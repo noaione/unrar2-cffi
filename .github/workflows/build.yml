@@ -60,7 +60,7 @@ jobs:
         run: |
           mkdir -p unrarsrc
           curl -L https://www.rarlab.com/rar/unrarsrc-${UNRAR_VERSION}.tar.gz -o unrar.tar.gz
-          tar -xzf -C unrarsrc --strip-components=1 unrar.tar.gz
+          tar -xzf unrar.tar.gz -C unrarsrc --strip-components=1
           rm unrar.tar.gz
 
       - name: Build wheels
