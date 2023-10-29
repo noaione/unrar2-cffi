@@ -53,13 +53,11 @@ jobs:
           - [macos-12, macosx_x86_64]
           - [windows-2019, win_amd64]
           - [windows-2019, win32]
-        python: ["3.9", "3.10", "3.11", "3.12"]
-        exclude:
-          # Don't build PyPy 32-bit windows
-          - buildplat: [windows-2019, win32]
-            python: "pp39"
-          - buildplat: [ ubuntu-20.04, musllinux_x86_64 ]
-            python: "pp39"
+        python:
+          - ["3.9", "39"]
+          - ["3.10", "310"]
+          - ["3.11", "311"]
+          - ["3.12", "312"]
 
     runs-on: ${{ matrix.buildplat[0] }}
     env:
@@ -69,10 +67,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python ${{ matrix.python }}
+      - name: Setup Python ${{ matrix.python[0] }}
         uses: actions/setup-python@v3
         with:
-          python-version: ${{ matrix.python }}
+          python-version: ${{ matrix.python[0] }}
 
       - name: Set up QEMU
         if: runner.os == 'Linux'
@@ -96,7 +94,7 @@ jobs:
         uses: pypa/cibuildwheel@v2.12.1
         env:
           CIBW_PRERELEASE_PYTHONS: True
-          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
+          CIBW_BUILD: cp${{ matrix.python[1] }}-${{ matrix.buildplat[1] }}
       
       - name: Upload wheels
         uses: actions/upload-artifact@v3
