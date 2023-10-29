@@ -1,0 +1,74 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
+
+env:
+  UNRAR_VERSION: 6.2.8
+
+jobs:
+  build_sdist:
+    name: Build sdist
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        name: Install Python
+        with:
+          python-version: 3.9
+
+      - name: Check metadata
+        run: "python setup.py check"
+      - name: Build sdist
+        run: "python setup.py sdist && ls -l dist"
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: unrar2-cffi
+          path: ./dist/unrar2-cffi-*.tar.gz
+
+  build_wheels:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-12]
+        python: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python ${{ matrix.python }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Set up QEMU
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: all
+
+      - name: Set up unrar
+        run: |
+          mkdir -p unrarsrc
+          curl -L https://www.rarlab.com/rar/unrarsrc-${UNRAR_VERSION}.tar.gz -o unrar.tar.gz
+          tar -xzf -C unrarsrc --strip-components=1 unrar.tar.gz
+          rm unrar.tar.gz
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.12.1
+      
+      - name: Upload wheels
+        uses: actions/upload-artifact@v3
+        with:
+          name: unrar2-cffi
+          path: |
+            ./wheelhouse/*.whl
