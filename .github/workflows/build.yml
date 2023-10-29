@@ -27,7 +27,9 @@ jobs:
 
       - name: Set up unrar
         run: |
-          git clone https://github.com/pmachapman/unrar.git@${UNRAR_REV} unrarsrc
+          git clone https://github.com/pmachapman/unrar.git unrarsrc
+          cd unrarsrc
+          git checkout ${UNRAR_REV}
 
       - name: Check metadata
         run: "python setup.py check"
@@ -86,7 +88,9 @@ jobs:
 
       - name: Set up unrar
         run: |
-          git clone https://github.com/pmachapman/unrar.git@${UNRAR_REV} unrarsrc
+          git clone https://github.com/pmachapman/unrar.git unrarsrc
+          cd unrarsrc
+          git checkout ${UNRAR_REV}
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.12.1
