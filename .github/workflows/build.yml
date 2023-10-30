@@ -73,17 +73,17 @@ jobs:
         with:
           platforms: all
 
-      - name: Install MSVC 2015 (v140) and Windows 8.1 SDK
-        if: runner.os == 'Windows'
-        shell: powershell
-        run: |
-          $VS_BTOOLS_EXE="vs_buildtools.exe"
-          $VS_BTOOLS_URI="https://aka.ms/vs/15/release/vs_buildtools.exe"
-          Invoke-WebRequest -Uri $VS_BTOOLS_URI -OutFile $VS_BTOOLS_EXE
-          Start-Process -FilePath ./vs_BuildTools.exe -ArgumentList `
-          "--add", "Microsoft.VisualStudio.Component.VC.140", `
-          "--add", "Microsoft.VisualStudio.Component.Windows81SDK", `
-          "--norestart", "--force", "--wait" -Wait -PassThru
+      # - name: Install MSVC 2015 (v140) and Windows 8.1 SDK
+      #   if: runner.os == 'Windows'
+      #   shell: powershell
+      #   run: |
+      #     $VS_BTOOLS_EXE="vs_buildtools.exe"
+      #     $VS_BTOOLS_URI="https://aka.ms/vs/15/release/vs_buildtools.exe"
+      #     Invoke-WebRequest -Uri $VS_BTOOLS_URI -OutFile $VS_BTOOLS_EXE
+      #     Start-Process -FilePath ./vs_BuildTools.exe -ArgumentList `
+      #     "--add", "Microsoft.VisualStudio.Component.VC.140", `
+      #     "--add", "Microsoft.VisualStudio.Component.Windows81SDK", `
+      #     "--norestart", "--force", "--wait" -Wait -PassThru
 
       - name: Setup MSVC (x64)
         if: runner.os == 'Windows' && matrix.buildplat[1] == 'win_amd64'
