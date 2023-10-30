@@ -89,6 +89,7 @@ jobs:
           git clone https://github.com/pmachapman/unrar.git unrarsrc
           cd unrarsrc
           git checkout ${UNRAR_REV}
+          cd ..
           python3 tools/apply_patches.py
 
       - name: Build wheels
