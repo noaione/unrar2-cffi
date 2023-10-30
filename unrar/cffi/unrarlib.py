@@ -72,7 +72,7 @@ def null_callback(*args):
     pass
 
 
-class RarHeader(object):
+class RarHeader:
     def __init__(self, handle, headerDataEx):
         self.handle = handle
         self.headerDataEx = headerDataEx
@@ -110,7 +110,7 @@ class RarHeader(object):
         return self.headerDataEx.FileCRC
 
     @property
-    def Flags(self):
+    def Flags(self) -> int:
         return self.headerDataEx.Flags
 
     @property
@@ -118,10 +118,10 @@ class RarHeader(object):
         return self.headerDataEx.HostOS
 
     @property
-    def Method(self):
+    def Method(self) -> int:
         return self.headerDataEx.Method
 
-    def skip(self):
+    def skip(self) -> None:
         RARProcessFileW(self.handle, C_RAR_SKIP, ffi.NULL, ffi.NULL)
 
     def test(self, callback=null_callback):
@@ -144,7 +144,7 @@ class BadRarFile(Exception):
 
 
 class RAROpenArchiveDataEx:
-    def __init__(self, filename: "PathLike", mode: int):
+    def __init__(self, filename: "PathLike", mode: int) -> None:
         COMMENT_MAX_SIZE = 64 * 1024
         self.arcNameW = ffi.new("wchar_t[]", str(filename))
         self.cmtBufW = ffi.new("wchar_t[{}]".format(COMMENT_MAX_SIZE))
