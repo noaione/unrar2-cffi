@@ -22,6 +22,13 @@ from ._unrarlib.lib import (  # type: ignore
 if TYPE_CHECKING:
     from os import PathLike
 
+__all__ = (
+    "RarArchive",
+    "RarHeader",
+    "RAROpenArchiveDataEx",
+    "BadRarFile",
+    "FLAGS_RHDF_DIRECTORY",
+)
 FLAGS_RHDF_DIRECTORY = C_RHDF_DIRECTORY
 
 

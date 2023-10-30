@@ -9,7 +9,12 @@ from .unrarlib import FLAGS_RHDF_DIRECTORY, BadRarFile, RarArchive, RarHeader
 if t.TYPE_CHECKING:
     from os import PathLike
 
-
+__all__ = (
+    "RarFile",
+    "RarInfo",
+    "RarFileError",
+    "is_rarfile",
+)
 DateTime = t.Tuple[int, int, int, int, int, int]
 
 
@@ -17,7 +22,7 @@ class RarFileError(Exception):
     pass
 
 
-def is_rarfile(filename):
+def is_rarfile(filename: t.Union["PathLike", str]) -> bool:
     """Return true if file is a valid RAR file."""
     try:
         with RarArchive.open_for_metadata(filename):
@@ -46,7 +51,7 @@ class RarFile:
 
     __slots__ = ("infos", "_filename", "comment")
 
-    def __init__(self, filename: PathLike) -> None:
+    def __init__(self, filename: "PathLike") -> None:
         """Load a RAR archive from a file specified by the filename.
 
         Parameters
@@ -61,7 +66,7 @@ class RarFile:
             If the RAR archive is invalid.
         """
 
-        self._filename: PathLike = filename
+        self._filename: "PathLike" = filename
 
         self.comment: bytes = b""
         self.infos: t.OrderedDict[str, RarInfo] = OrderedDict()
