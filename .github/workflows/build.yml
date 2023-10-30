@@ -88,7 +88,7 @@ jobs:
           Start-Process -FilePath ./vs_BuildTools.exe -ArgumentList `
           "--add", "Microsoft.VisualStudio.Component.VC.140", `
           "--add", "Microsoft.VisualStudio.Component.Windows81SDK", `
-          "--quiet", "--norestart", "--force", "--wait" -Wait -PassThru
+          "--norestart", "--force", "--wait" -Wait -PassThru
 
       - name: Setup MSVC (x64)
         if: runner.os == 'Windows' && matrix.buildplat[1] == 'win_amd64'
