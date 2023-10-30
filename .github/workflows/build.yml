@@ -30,6 +30,9 @@ jobs:
           git clone https://github.com/pmachapman/unrar.git unrarsrc
           cd unrarsrc
           git checkout ${UNRAR_REV}
+          rm -rf .git
+          cd ..
+          python3 tools/apply_patches.py
 
       - name: Check metadata
         run: "python setup.py check"
@@ -90,7 +93,7 @@ jobs:
         uses: TheMrMilchmann/setup-msvc-dev@v3
         with:
           arch: x64
-          sdk: 8.1
+          sdk: "10.0.22621.0"
           toolset: 14.0
 
       - name: Setup MSVC (x64)
@@ -98,22 +101,25 @@ jobs:
         uses: TheMrMilchmann/setup-msvc-dev@v3
         with:
           arch: x86
-          sdk: 8.1
-          toolset: 14.0
+          sdk: "10.0.22621.0"
+          toolset: 14.3
 
       - name: Set up unrar
         run: |
           git clone https://github.com/pmachapman/unrar.git unrarsrc
           cd unrarsrc
           git checkout ${UNRAR_REV}
+          rm -rf .git
           cd ..
-          # python3 tools/apply_patches.py
+          python3 tools/apply_patches.py
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.16.2
         env:
           CIBW_PRERELEASE_PYTHONS: True
           CIBW_BUILD: "*-${{ matrix.buildplat[1] }}"
+          # Do not build PyPy
+          CIBW_SKIP: "pp*"
       
       - name: Upload wheels
         uses: actions/upload-artifact@v3
