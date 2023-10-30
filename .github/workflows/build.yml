@@ -96,7 +96,7 @@ jobs:
           sdk: "10.0.22621.0"
           toolset: 14.0
 
-      - name: Setup MSVC (x64)
+      - name: Setup MSVC (x86)
         if: runner.os == 'Windows' && matrix.buildplat[1] == 'win32'
         uses: TheMrMilchmann/setup-msvc-dev@v3
         with:
@@ -119,7 +119,7 @@ jobs:
           CIBW_BUILD: "*-${{ matrix.buildplat[1] }}"
           # Do not build PyPy
           CIBW_SKIP: "pp*"
-      
+
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
