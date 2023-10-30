@@ -1,0 +1,159 @@
+From 83c5e625c17426ed01975afd012013873539e244 Mon Sep 17 00:00:00 2001
+From: noaione <noaione0809@gmail.com>
+Date: Mon, 30 Oct 2023 13:07:13 +0700
+Subject: [PATCH] build: retarget to vs2022/10.0/v143
+
+---
+ unrarsrc/UnRAR.vcxproj         | 10 ++++----
+ unrarsrc/UnRARDll.sln          | 37 ++++++++++++++++++++++++++++++
+ unrarsrc/UnRARDll.vcxproj      | 12 +++++-----
+ unrarsrc/UnRARDll.vcxproj.user |  4 ++++
+ 4 files changed, 52 insertions(+), 11 deletions(-)
+ create mode 100644 unrarsrc/UnRARDll.sln
+ create mode 100644 unrarsrc/UnRARDll.vcxproj.user
+
+diff --git a/unrarsrc/UnRAR.vcxproj b/unrarsrc/UnRAR.vcxproj
+index b55873e..01e79e7 100644
+--- a/unrarsrc/UnRAR.vcxproj
++++ b/unrarsrc/UnRAR.vcxproj
+@@ -22,29 +22,29 @@
+     <ProjectGuid>{95CC809B-03FC-4EDB-BB20-FD07A698C05F}</ProjectGuid>
+     <RootNamespace>UnRAR</RootNamespace>
+     <Keyword>Win32Proj</Keyword>
+-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
++    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+     <ConfigurationType>Application</ConfigurationType>
+-    <PlatformToolset>v140_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <CharacterSet>MultiByte</CharacterSet>
+     <WholeProgramOptimization>true</WholeProgramOptimization>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+     <ConfigurationType>Application</ConfigurationType>
+-    <PlatformToolset>v140_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <CharacterSet>MultiByte</CharacterSet>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+     <ConfigurationType>Application</ConfigurationType>
+-    <PlatformToolset>v140_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <CharacterSet>MultiByte</CharacterSet>
+     <WholeProgramOptimization>false</WholeProgramOptimization>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+     <ConfigurationType>Application</ConfigurationType>
+-    <PlatformToolset>v140_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <CharacterSet>MultiByte</CharacterSet>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+diff --git a/unrarsrc/UnRARDll.sln b/unrarsrc/UnRARDll.sln
+new file mode 100644
+index 0000000..6601f23
+--- /dev/null
++++ b/unrarsrc/UnRARDll.sln
+@@ -0,0 +1,37 @@
++﻿
++Microsoft Visual Studio Solution File, Format Version 12.00
++# Visual Studio Version 17
++VisualStudioVersion = 17.7.34202.233
++MinimumVisualStudioVersion = 10.0.40219.1
++Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnRAR", "UnRARDll.vcxproj", "{E815C46C-36C4-499F-BBC2-E772C6B17971}"
++EndProject
++Global
++	GlobalSection(SolutionConfigurationPlatforms) = preSolution
++		Debug|x64 = Debug|x64
++		Debug|x86 = Debug|x86
++		release_nocrypt|x64 = release_nocrypt|x64
++		release_nocrypt|x86 = release_nocrypt|x86
++		Release|x64 = Release|x64
++		Release|x86 = Release|x86
++	EndGlobalSection
++	GlobalSection(ProjectConfigurationPlatforms) = postSolution
++		{E815C46C-36C4-499F-BBC2-E772C6B17971}.Debug|x64.ActiveCfg = Debug|x64
++		{E815C46C-36C4-499F-BBC2-E772C6B17971}.Debug|x64.Build.0 = Debug|x64
++		{E815C46C-36C4-499F-BBC2-E772C6B17971}.Debug|x86.ActiveCfg = Debug|Win32
++		{E815C46C-36C4-499F-BBC2-E772C6B17971}.Debug|x86.Build.0 = Debug|Win32
++		{E815C46C-36C4-499F-BBC2-E772C6B17971}.release_nocrypt|x64.ActiveCfg = release_nocrypt|x64
++		{E815C46C-36C4-499F-BBC2-E772C6B17971}.release_nocrypt|x64.Build.0 = release_nocrypt|x64
++		{E815C46C-36C4-499F-BBC2-E772C6B17971}.release_nocrypt|x86.ActiveCfg = release_nocrypt|Win32
++		{E815C46C-36C4-499F-BBC2-E772C6B17971}.release_nocrypt|x86.Build.0 = release_nocrypt|Win32
++		{E815C46C-36C4-499F-BBC2-E772C6B17971}.Release|x64.ActiveCfg = Release|x64
++		{E815C46C-36C4-499F-BBC2-E772C6B17971}.Release|x64.Build.0 = Release|x64
++		{E815C46C-36C4-499F-BBC2-E772C6B17971}.Release|x86.ActiveCfg = Release|Win32
++		{E815C46C-36C4-499F-BBC2-E772C6B17971}.Release|x86.Build.0 = Release|Win32
++	EndGlobalSection
++	GlobalSection(SolutionProperties) = preSolution
++		HideSolutionNode = FALSE
++	EndGlobalSection
++	GlobalSection(ExtensibilityGlobals) = postSolution
++		SolutionGuid = {0AB36CC8-9770-4E3E-926E-9C9AEF9280C1}
++	EndGlobalSection
++EndGlobal
+diff --git a/unrarsrc/UnRARDll.vcxproj b/unrarsrc/UnRARDll.vcxproj
+index d96e4d1..0476f4a 100644
+--- a/unrarsrc/UnRARDll.vcxproj
++++ b/unrarsrc/UnRARDll.vcxproj
+@@ -31,7 +31,7 @@
+     <ProjectGuid>{E815C46C-36C4-499F-BBC2-E772C6B17971}</ProjectGuid>
+     <RootNamespace>UnRAR</RootNamespace>
+     <Keyword>Win32Proj</Keyword>
+-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
++    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release_nocrypt|Win32'" Label="Configuration">
+@@ -42,30 +42,30 @@
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+     <ConfigurationType>DynamicLibrary</ConfigurationType>
+-    <PlatformToolset>v140_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <CharacterSet>MultiByte</CharacterSet>
+     <WholeProgramOptimization>true</WholeProgramOptimization>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+     <ConfigurationType>DynamicLibrary</ConfigurationType>
+-    <PlatformToolset>v140_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <CharacterSet>MultiByte</CharacterSet>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release_nocrypt|x64'" Label="Configuration">
+     <ConfigurationType>DynamicLibrary</ConfigurationType>
+-    <PlatformToolset>v140_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <CharacterSet>MultiByte</CharacterSet>
+     <WholeProgramOptimization>false</WholeProgramOptimization>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+     <ConfigurationType>DynamicLibrary</ConfigurationType>
+-    <PlatformToolset>v140_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <CharacterSet>MultiByte</CharacterSet>
+     <WholeProgramOptimization>false</WholeProgramOptimization>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+     <ConfigurationType>DynamicLibrary</ConfigurationType>
+-    <PlatformToolset>v140_xp</PlatformToolset>
++    <PlatformToolset>v143</PlatformToolset>
+     <CharacterSet>MultiByte</CharacterSet>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+diff --git a/unrarsrc/UnRARDll.vcxproj.user b/unrarsrc/UnRARDll.vcxproj.user
+new file mode 100644
+index 0000000..88a5509
+--- /dev/null
++++ b/unrarsrc/UnRARDll.vcxproj.user
+@@ -0,0 +1,4 @@
++﻿<?xml version="1.0" encoding="utf-8"?>
++<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
++  <PropertyGroup />
++</Project>
+\ No newline at end of file
+-- 
+2.40.0.windows.1
+
