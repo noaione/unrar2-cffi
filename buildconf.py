@@ -4,6 +4,7 @@ from distutils import log
 from distutils.cmd import Command
 from os import getenv
 from os.path import dirname, join, realpath
+from pathlib import Path
 
 UNRARSRC = "unrarsrc"
 
@@ -71,8 +72,38 @@ class BuildUnrarCommand(Command):
     def finalize_options(self):
         pass
 
+    def _macos_patch(self):
+        rel, _, _ = platform.mac_ver()
+        if rel == "":
+            # Not macOS
+            return
+        log.info("patching unrar library makefile for macOS (explicit c++11)")
+        ROOT_DIR = Path(__file__).absolute().parent
+        makefile = ROOT_DIR / UNRARSRC / "makefile"
+        makefile_data = makefile.read_text().splitlines()
+        cxx_pos = None
+        for i, line in enumerate(makefile_data):
+            if line.startswith("CXXFLAGS="):
+                # Get CXXFLAGS= line
+                cxx_pos = i
+                break
+
+        if cxx_pos is None:
+            raise RuntimeError("makefile CXXFLAGS not found")
+
+        # Add -std=c++11 to CXXFLAGS
+        cxx_flags = makefile_data[cxx_pos].split("=")[1]
+        cxx_flags = f"-std=c++11 {cxx_flags}"
+        makefile_data[cxx_pos] = f"CXXFLAGS={cxx_flags}"
+        # Save
+        log.info(f"modified cxxflags to: {cxx_flags}")
+        log.info("saving modified makefile")
+        makefile.write_text("\n".join(makefile_data))
+
     def run(self):
         log.info("compiling unrar library")
+        # In macOS, clang would need an explicit -std=c++11 flag
+        self._macos_patch()
         subprocess.check_call(BUILD_CMD)
 
 
