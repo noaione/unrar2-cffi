@@ -1,2 +1,10 @@
-call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-%*
+@echo off
+
+for /f "usebackq tokens=*" %%i in (`vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do (
+    set InstallDir=%%i
+)
+
+if exist "%InstallDir%\Common7\Tools\vsdevcmd.bat" (
+    call "%InstallDir%\Common7\Tools\vsdevcmd.bat"
+    %*
+)

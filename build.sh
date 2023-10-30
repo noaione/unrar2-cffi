@@ -4,10 +4,10 @@ set -o errexit
 
 PYTHON=${PYTHON:-python}
 PIP=${PIP:-pip}
-UNRAR_VERSION="5.8.2"
+UNRAR_VERSION="6.2.8"
 OS=${OS:-unix}
-DOCKER_IMAGE=${DOCKER_IMAGE:-quay.io/pypa/manylinux2010_x86_64}
-PLAT=${PLAT:-manylinux2010_x86_64}
+DOCKER_IMAGE=${DOCKER_IMAGE:-quay.io/pypa/manylinux_2_28_x86_64}
+PLAT=${PLAT:-manylinux_2_28_x86_64}
 PYTEST=${PYTEST:-pytest}
 SETUPTOOLS_SCM_PRETEND_VERSION=${SETUPTOOLS_SCM_PRETEND_VERSION:-}
 

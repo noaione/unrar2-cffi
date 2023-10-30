@@ -1,3 +1,7 @@
+[project]
+name = "unrar2-cffi"
+dynamic = ["version"]
+
 [build-system]
 requires = ["setuptools>=42", "wheel", "setuptools_scm", "cffi"]
 build-backend = "setuptools.build_meta"
