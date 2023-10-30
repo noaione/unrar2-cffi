@@ -111,6 +111,8 @@ jobs:
           CIBW_BUILD: "*-${{ matrix.buildplat[1] }}"
           # Do not build PyPy
           CIBW_SKIP: "pp*"
+          # Test
+          CIBW_TEST_COMMAND: "pytest {project}/tests -vvv"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v3
