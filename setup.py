@@ -1,10 +1,5 @@
-from setuptools import Extension, setup
+from setuptools import setup
 
 setup(
-    ext_modules=[
-        Extension(
-            "unrar.cffi.unrarlib",
-            ["unrar/cffi/unrarlib_ext.c"],
-        )
-    ]
+    cffi_modules=["buildconf.py:create_builder"]
 )

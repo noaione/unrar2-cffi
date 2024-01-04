@@ -7,8 +7,6 @@ from os import getenv
 from os.path import dirname, join, realpath
 from pathlib import Path
 
-from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
-
 UNRARSRC = "unrarsrc"
 
 # UNIX like OS
@@ -130,3 +128,16 @@ class BuildOverride(build):
     def run(self):
         self.run_command("build_unrar")
         build.run(self)
+
+
+def create_builder():
+    from cffi import FFI
+
+    preprocess = subprocess.check_output(PREPROCESS_CMD, universal_newlines=True)
+
+    builder = FFI()
+    builder.cdef(preprocess, packed=True)
+
+    with open("unrar/cffi/unrarlib_ext.c") as f:  # noqa: PTH123
+        builder.set_source("unrar.cffi._unrarlib", f.read(), **SOURCE_PARAMETERS)
+    return builder
