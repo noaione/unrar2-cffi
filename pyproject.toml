@@ -42,3 +42,4 @@ version = { attr = "unrar.cffi.__version__" }
 [tool.setuptools.cmdclass]
 build = "buildconf.BuildOverride"
 build_unrar = "buildconf.BuildUnrarCommand"
+bdist_wheel = "buildconf.bdist_wheel"
