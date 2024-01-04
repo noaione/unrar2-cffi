@@ -36,11 +36,11 @@ jobs:
           cd ..
           python3 tools/apply_patches.py
 
-      - name: Check metadata
-        run: "python setup.py check"
-
       - name: Build sdist
-        run: "python setup.py sdist && ls -l dist"
+        run: |
+          pip install build
+          python -m build --sdist .
+          ls -l dist
 
       - uses: actions/upload-artifact@v3
         with:
