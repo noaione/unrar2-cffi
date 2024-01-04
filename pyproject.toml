@@ -21,6 +21,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dynamic = ["version"]
+dependencies = ["cffi"]
 
 [build-system]
 requires = ["setuptools>=60", "wheel", "cffi"]
@@ -37,3 +38,7 @@ packages = ["unrar.cffi"]
 
 [tool.setuptools.dynamic]
 version = { attr = "unrar.cffi.__version__" }
+
+[tool.setuptools.cmdclass]
+build = "buildconf.BuildOverride"
+build_unrar = "buildconf.BuildUnrarCommand"
