@@ -1,5 +1,5 @@
-#include "raros.hpp"
-#include "dll.hpp"
+#include <unrarsrc/raros.hpp>
+#include <unrarsrc/dll.hpp>
 
 // same as UNRARCALLBACK but with a void * UserData to avoid tricky castings on the python side
 typedef int (CALLBACK *UNRARCALLBACKPtr)(UINT msg,void * UserData,LPARAM P1,LPARAM P2);
