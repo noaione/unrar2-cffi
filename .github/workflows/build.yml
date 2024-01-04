@@ -100,17 +100,10 @@ jobs:
           git checkout ${UNRAR_REV}
           cd ..
 
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v2.16.2
-        env:
-          CIBW_PRERELEASE_PYTHONS: True
-          CIBW_BUILD: "*-${{ matrix.buildplat[1] }}"
-          # Do not build PyPy
-          CIBW_SKIP: "pp*"
-          # Test
-          CIBW_TEST_REQUIRES: pytest
-          CIBW_TEST_COMMAND: "pytest {project}/tests -vvv"
-          CIBW_BUILD_VERBOSITY: 1
+      - name: Build wheel
+        run: |
+          pip wheel -w wheelhouse .
+          ls -l wheelhouse
 
       - name: Upload wheels
         uses: actions/upload-artifact@v3

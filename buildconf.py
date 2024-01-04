@@ -7,8 +7,6 @@ from os import getenv
 from os.path import dirname, join, realpath
 from pathlib import Path
 
-from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
-
 UNRARSRC = "unrarsrc"
 
 # UNIX like OS
@@ -130,10 +128,3 @@ class BuildOverride(build):
     def run(self):
         self.run_command("build_unrar")
         build.run(self)
-
-
-# Override bdist_wheel to mark the wheel as platform specific
-class bdist_wheel(_bdist_wheel):
-    def finalize_options(self):
-        _bdist_wheel.finalize_options(self)
-        self.root_is_pure = False
