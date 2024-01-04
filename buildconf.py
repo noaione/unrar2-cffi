@@ -72,6 +72,21 @@ class BuildUnrarCommand(Command):
     def finalize_options(self):
         pass
 
+    def _windows_patch(self):
+        if platform.system() != "Windows":
+            # Not Windows
+            return
+
+        log.info("patching unrar vcxproj for Windows (retargeting to v141)")
+        ROOT_DIR = Path(__file__).absolute().parent
+        patch_files = [
+            ROOT_DIR / "patches" / "0001-build-retarget-to-vs2022-10.0-v143.patch"
+        ]
+
+        for patch in patch_files:
+            log.info(f"applying patch: {patch}")
+            subprocess.run(["git", "apply", str(patch)])
+
     def _macos_patch(self):
         rel, _, _ = platform.mac_ver()
         if rel == "":
@@ -104,6 +119,8 @@ class BuildUnrarCommand(Command):
         log.info("compiling unrar library")
         # In macOS, clang would need an explicit -std=c++11 flag
         self._macos_patch()
+        # In Windows, we need to retarget the project to v141
+        self._windows_patch()
         subprocess.check_call(BUILD_CMD)
 
 

@@ -1,2 +1,4 @@
 include LICENSE
+include buildconf.py
 recursive-include unrarsrc *
+recursive-include patches *
