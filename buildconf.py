@@ -130,10 +130,3 @@ class BuildOverride(build):
     def run(self):
         self.run_command("build_unrar")
         build.run(self)
-
-
-# Override bdist_wheel to mark the wheel as platform specific
-class bdist_wheel(_bdist_wheel):
-    def finalize_options(self):
-        _bdist_wheel.finalize_options(self)
-        self.root_is_pure = False
