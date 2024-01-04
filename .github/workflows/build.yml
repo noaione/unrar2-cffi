@@ -34,7 +34,6 @@ jobs:
           git checkout ${UNRAR_REV}
           rm -rf .git
           cd ..
-          python3 tools/apply_patches.py
 
       - name: Build sdist
         run: |
@@ -100,7 +99,6 @@ jobs:
           cd unrarsrc
           git checkout ${UNRAR_REV}
           cd ..
-          python3 tools/apply_patches.py
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.16.2
