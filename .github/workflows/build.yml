@@ -125,25 +125,6 @@ jobs:
           path: |
             dist/*.whl
 
-  test_publish:
-    name: Test Publish
-    needs: [build_sdist, build_wheels]
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: dist
-          pattern: unrar2-cffi-*
-          merge-multiple: true
-
-      - name: Check dist
-        run: |
-          ls -l dist
-
   publish:
     name: Publish
     needs: [build_sdist, build_wheels]
