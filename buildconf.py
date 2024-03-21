@@ -32,7 +32,7 @@ if platform.system() == "Windows":
     bits = platform.architecture()[0][0:2]
     build_platform = "x64" if bits == "64" else "Win32"
     build_dir = join(realpath(dirname(__file__)), "unrar/cffi")  # noqa: PTH118,PTH120
-    build_platform_toolset = getenv("PLATFORM_TOOLSET", "v141")
+    build_platform_toolset = getenv("PLATFORM_TOOLSET", "v143")
     SOURCE_PARAMETERS = {
         "library_dirs": [build_dir],
         "include_dirs": ["unrar/cffi", UNRARSRC],
@@ -65,6 +65,8 @@ if platform.system() == "Windows":
 
 class BuildUnrarCommand(Command):
     description = "build unrar library"
+    user_options = []  # noqa: RUF012
+    sub_commands = ["build"]
 
     def initialize_options(self):
         pass
@@ -128,21 +130,23 @@ class BuildUnrarCommand(Command):
 class BuildOverride(build):
     def run(self):
         self.run_command("build_unrar")
+        first_mod = self.distribution.ext_modules[0]
+        first_source = first_mod.sources[0]
+        if first_source == "$PLACEHOLDER":
+            self.distribution.ext_modules[0].sources[0] = "build/unrar/cffi/_unrarlib.c"
         build.run(self)
 
 
 def create_builder():
     from cffi import FFI
 
-    log.info("preprocessing unrarlib_py.h")
+    log.info("preprocessing extension headers")
     preprocess = subprocess.check_output(PREPROCESS_CMD, universal_newlines=True)
-    log.info("preprocessing done")
-    log.info(preprocess)
 
     builder = FFI()
     builder.cdef(preprocess, packed=True)
 
-    with open("unrar/cffi/unrarlib_ext.c") as f:  # noqa: PTH123
+    with Path("unrar/cffi/unrarlib_ext.c").open() as f:
         builder.set_source("unrar.cffi._unrarlib", f.read(), **SOURCE_PARAMETERS)
-    log.info("builder created")
+
     return builder

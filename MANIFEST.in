@@ -1,4 +1,7 @@
 include LICENSE
 include buildconf.py
+include unrar/cffi/unrarlib_ext.c
+include unrar/cffi/unrarlib_ext.h
+include unrar/cffi/unrarlib_py.h
 recursive-include unrarsrc *
 recursive-include patches *

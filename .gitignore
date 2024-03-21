@@ -16,3 +16,9 @@ __pycache__
 
 .vs
 *.whl
+*.dll
+*.exp
+*.pdb
+*.lib
+unrar/cffi/_unrarlib*
+Release/*
