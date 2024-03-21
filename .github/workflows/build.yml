@@ -21,11 +21,11 @@ jobs:
     name: Build sdist
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         name: Install Python
         with:
-          python-version: 3.9
+          python-version: "3.10"
 
       - name: Set up unrar
         run: |
@@ -41,9 +41,9 @@ jobs:
           python -m build --sdist .
           ls -l dist
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: unrar2-cffi
+          name: unrar2-cffi-sdist
           path: ./dist/unrar2-cffi-*.tar.gz
 
   build_wheels:
@@ -68,13 +68,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
       - name: Set up QEMU
         if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: all
 
@@ -113,12 +113,36 @@ jobs:
           CIBW_TEST_COMMAND: "pytest {project}/tests -vvv"
           CIBW_BUILD_VERBOSITY: 1
 
+      - name: Move wheels
+        run: |
+          mkdir -p dist
+          mv wheelhouse/*.whl dist/
+
       - name: Upload wheels
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: unrar2-cffi
+          name: unrar2-cffi-${{ matrix.buildplat[1] }}
           path: |
-            ./wheelhouse/*.whl
+            dist/*.whl
+
+  test_publish:
+    name: Test Publish
+    needs: [build_sdist, build_wheels]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: unrar2-cffi-*
+          merge-multiple: true
+
+      - name: Check dist
+        run: |
+          ls -l dist
 
   publish:
     name: Publish
@@ -132,15 +156,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: unrar2-cffi
-          path: ./dist
+          path: dist
+          pattern: unrar2-cffi-*
+          merge-multiple: true
 
       - name: Publish PyPi Test
         uses: pypa/gh-action-pypi-publish@release/v1
