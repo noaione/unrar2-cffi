@@ -122,6 +122,7 @@ class BuildUnrarCommand(Command):
         # In Windows, we need to retarget the project to v141
         self._windows_patch()
         subprocess.check_call(BUILD_CMD)
+        log.info("compiled unrar library")
 
 
 class BuildOverride(build):
@@ -133,11 +134,15 @@ class BuildOverride(build):
 def create_builder():
     from cffi import FFI
 
+    log.info("preprocessing unrarlib_py.h")
     preprocess = subprocess.check_output(PREPROCESS_CMD, universal_newlines=True)
+    log.info("preprocessing done")
+    log.info(preprocess)
 
     builder = FFI()
     builder.cdef(preprocess, packed=True)
 
     with open("unrar/cffi/unrarlib_ext.c") as f:  # noqa: PTH123
         builder.set_source("unrar.cffi._unrarlib", f.read(), **SOURCE_PARAMETERS)
+    log.info("builder created")
     return builder
