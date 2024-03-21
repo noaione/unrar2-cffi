@@ -29,6 +29,7 @@ build-backend = "setuptools.build_meta"
 
 [project.urls]
 homepage = "https://github.com/noaione/unrar2-cffi"
+changelog = "https://github.com/noaione/unrar2-cffi/blob/develop/CHANGELOG.md"
 
 [tool.setuptools]
 package-data = { "unrar.cffi" = ["*.dll"] }
