@@ -66,7 +66,6 @@ if platform.system() == "Windows":
 class BuildUnrarCommand(Command):
     description = "build unrar library"
     user_options = []  # noqa: RUF012
-    sub_commands = ["build"]
 
     def initialize_options(self):
         pass
@@ -132,6 +131,7 @@ class BuildOverride(build):
         self.run_command("build_unrar")
         first_mod = self.distribution.ext_modules[0]
         first_source = first_mod.sources[0]
+        # Retrigger the cffi distribution data
         dist_parent = create_builder().distutils_extension()
         log.info("data: %s", dist_parent.sources)
 
