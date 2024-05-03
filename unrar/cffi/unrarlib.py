@@ -167,7 +167,7 @@ class RarHeader:
         result = RARProcessFileW(self.handle, C_RAR_TEST, ffi.NULL, ffi.NULL)
         RARSetCallbackPtr(self.handle, ffi.NULL, ffi.NULL)
         if result != C_ERAR_SUCCESS:
-            raise BadRarFile("Rarfile corrupted: error code is %d" % result)
+            raise BadRarFile(result, "Rarfile corrupted: error code is %d" % result)
 
 
 class BadRarFile(Exception):
@@ -200,9 +200,7 @@ class RAROpenArchiveDataEx:
         return self.value
 
     def set_password(self, password: str) -> None:
-        # void   PASCAL RARSetPassword(HANDLE hArcData,char *Password);
-        # self.value is HANDLE hArcData
-        password_ffi = ffi.new("char[]", password)
+        password_ffi = ffi.new("char[]", password.encode("ascii"))
         RARSetPassword(self.value, password_ffi)
 
 
