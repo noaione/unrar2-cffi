@@ -3,6 +3,7 @@ from pathlib import Path
 from pytest import fixture, raises
 
 from unrar.cffi.rarfile import RarFile, RarFileError, RarInfo, is_rarfile
+from unrar.cffi.unrarlib import FLAGS_BAD_PASSWORD, FLAGS_MISSING_PASSWORD
 
 CURRENT_DIR = Path(__file__).absolute().parent
 
@@ -137,3 +138,20 @@ def test_rar_is_dir(rar):
     testfile = Path("testdir") / "testfile"
     assert rar.getinfo(str(testfile)).is_dir() is False
     assert rar.getinfo("testdir").is_dir()
+
+
+def test_rar_with_password():
+    rar = RarFile(CURRENT_DIR / "test_rar_pwd.rar", pwd="test")
+    assert rar.namelist() == ["test_file.txt"]
+
+
+def test_rar_bad_password():
+    with raises(RarFileError) as exc_info:
+        RarFile(CURRENT_DIR / "test_rar_pwd.rar", pwd="wrong")
+    assert exc_info.value.code == FLAGS_BAD_PASSWORD
+
+
+def test_rar_missing_pass():
+    with raises(RarFileError) as exc_info:
+        RarFile(CURRENT_DIR / "test_rar_pwd.rar")
+    assert exc_info.value.code == FLAGS_MISSING_PASSWORD
