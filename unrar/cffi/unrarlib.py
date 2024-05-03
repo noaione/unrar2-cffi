@@ -1,9 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Generator
+from typing import TYPE_CHECKING, Any, Generator, Optional
 
 from ._unrarlib import ffi  # type: ignore
 from ._unrarlib.lib import (  # type: ignore
+    C_ERAR_BAD_PASSWORD,
+    C_ERAR_MISSING_PASSWORD,
     C_ERAR_SUCCESS,
     C_RAR_OM_EXTRACT,
     C_RAR_OM_LIST_INCSPLIT,
@@ -17,6 +19,7 @@ from ._unrarlib.lib import (  # type: ignore
     RARProcessFileW,
     RARReadHeaderEx,
     RARSetCallbackPtr,
+    RARSetPassword,
 )
 
 if TYPE_CHECKING:
@@ -28,8 +31,15 @@ __all__ = (
     "RAROpenArchiveDataEx",
     "BadRarFile",
     "FLAGS_RHDF_DIRECTORY",
+    "FLAGS_SUCCESS",
+    "FLAGS_MISSING_PASSWORD",
+    "FLAGS_BAD_PASSWORD",
 )
-FLAGS_RHDF_DIRECTORY = C_RHDF_DIRECTORY
+
+FLAGS_RHDF_DIRECTORY: int = C_RHDF_DIRECTORY
+FLAGS_SUCCESS: int = C_ERAR_SUCCESS
+FLAGS_MISSING_PASSWORD: int = C_ERAR_MISSING_PASSWORD
+FLAGS_BAD_PASSWORD: int = C_ERAR_BAD_PASSWORD
 
 
 @ffi.def_extern("PyUNRARCALLBACKStub")
@@ -39,16 +49,30 @@ def PyUNRARCALLBACKSkeleton(msg, user_data, p1, p2):
 
 
 class RarArchive:
-    def __init__(self, filename: "PathLike", mode: int) -> None:
+    def __init__(self, filename: "PathLike", mode: int, *, pwd: Optional[str] = None) -> None:
         self.comment = ""
         archive = RAROpenArchiveDataEx(filename, mode)
+        if pwd is not None and pwd:
+            archive.set_password(pwd)
         self.handle = RAROpenArchiveEx(archive.value)
         if archive.value.OpenResult != C_ERAR_SUCCESS:
-            raise BadRarFile(
-                "Cannot open {}: OpenResult is {}".format(
-                    filename, archive.value.OpenResult
+            if archive.value.OpenResult == C_ERAR_MISSING_PASSWORD:
+                raise BadRarPassword(
+                    archive.value.OpenResult,
+                    "Cannot open {}: Missing password".format(filename),
                 )
-            )
+            elif archive.value.OpenResult == C_ERAR_BAD_PASSWORD:
+                raise BadRarPassword(
+                    archive.value.OpenResult,
+                    "Cannot open {}: Bad password".format(filename),
+                )
+            else:
+                raise BadRarFile(
+                    archive.value.OpenResult,
+                    "Cannot open {}: Error code is {}".format(
+                        filename, archive.value.OpenResult
+                    )
+                )
         self.comment = ffi.string(archive.value.CmtBufW)
 
     def __enter__(self):
@@ -67,12 +91,12 @@ class RarArchive:
             res = RARReadHeaderEx(self.handle, header_data)
 
     @staticmethod
-    def open_for_metadata(filename: "PathLike") -> "RarArchive":
-        return RarArchive(filename, C_RAR_OM_LIST_INCSPLIT)
+    def open_for_metadata(filename: "PathLike", *, pwd: Optional[str] = None) -> "RarArchive":
+        return RarArchive(filename, C_RAR_OM_LIST_INCSPLIT, pwd=pwd)
 
     @staticmethod
-    def open_for_processing(filename: "PathLike") -> "RarArchive":
-        return RarArchive(filename, C_RAR_OM_EXTRACT)
+    def open_for_processing(filename: "PathLike", *, pwd: Optional[str] = None) -> "RarArchive":
+        return RarArchive(filename, C_RAR_OM_EXTRACT, pwd=pwd)
 
 
 def null_callback(*args):
@@ -147,6 +171,13 @@ class RarHeader:
 
 
 class BadRarFile(Exception):
+    def __init__(self, code: int, message: str) -> None:
+        self.code = code
+        self.message = message
+        super().__init__(message)
+
+
+class BadRarPassword(BadRarFile):
     pass
 
 
@@ -167,6 +198,12 @@ class RAROpenArchiveDataEx:
 
     def value(self):
         return self.value
+
+    def set_password(self, password: str) -> None:
+        # void   PASCAL RARSetPassword(HANDLE hArcData,char *Password);
+        # self.value is HANDLE hArcData
+        password_ffi = ffi.new("char[]", password)
+        RARSetPassword(self.value, password_ffi)
 
 
 def RARHeaderDataEx():

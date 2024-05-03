@@ -19,7 +19,9 @@ DateTime = t.Tuple[int, int, int, int, int, int]
 
 
 class RarFileError(Exception):
-    pass
+    def __init__(self, code: int, message: str) -> None:
+        self.code = code
+        self.message = message
 
 
 def is_rarfile(filename: t.Union["PathLike", str]) -> bool:
@@ -51,7 +53,7 @@ class RarFile:
 
     __slots__ = ("infos", "_filename", "comment")
 
-    def __init__(self, filename: "PathLike") -> None:
+    def __init__(self, filename: "PathLike", *, pwd: t.Optional[str] = None) -> None:
         """Load a RAR archive from a file specified by the filename.
 
         Parameters
@@ -72,13 +74,13 @@ class RarFile:
         self.infos: t.OrderedDict[str, RarInfo] = OrderedDict()
 
         try:
-            with RarArchive.open_for_processing(filename) as rar:
+            with RarArchive.open_for_processing(filename, pwd=pwd) as rar:
                 self.comment = rar.comment.encode("utf-8")
                 for header in rar.iterate_headers():
                     self.infos[header.FileNameW] = RarInfo(header)
                     header.skip()
         except BadRarFile as err:
-            raise RarFileError("Error opening rar: {0}".format(err))
+            raise RarFileError(err.code, "Error opening rar: {0}".format(err))
 
     @property
     def filename(self) -> str:
