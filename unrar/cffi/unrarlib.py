@@ -15,6 +15,7 @@ from ._unrarlib.lib import (  # type: ignore
     UCM_PROCESSDATA,
     PyUNRARCALLBACKStub,
     RARCloseArchive,
+    RARGetUnrarVersionCallback,
     RAROpenArchiveEx,
     RARProcessFileW,
     RARReadHeaderEx,
@@ -30,6 +31,7 @@ __all__ = (
     "RarHeader",
     "RAROpenArchiveDataEx",
     "BadRarFile",
+    "get_unrar_version",
     "FLAGS_RHDF_DIRECTORY",
     "FLAGS_SUCCESS",
     "FLAGS_MISSING_PASSWORD",
@@ -224,3 +226,19 @@ class RAROpenArchiveDataEx:
 
 def RARHeaderDataEx():
     return ffi.new("struct RARHeaderDataEx *")
+
+
+def get_unrar_version() -> tuple[int, int, int]:
+    """Get current unrar library version used when doing compilation.
+
+    :return: 3-tuple of major, minor and patch version numbers
+    :rtype: tuple[int, int, int]
+    """
+
+    c_major = ffi.new("int *")
+    c_minor = ffi.new("int *")
+    c_patch = ffi.new("int *")
+
+    RARGetUnrarVersionCallback(c_major, c_minor, c_patch)
+    # Convert to 3-tuple of int
+    return (c_major[0], c_minor[0], c_patch[0])

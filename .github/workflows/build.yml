@@ -13,8 +13,8 @@ on:
       - develop
 
 env:
-  UNRAR_VERSION: 6.2.8
-  UNRAR_REV: df15c8c3c9f4105d3501bc477e80ac6b8e227677
+  UNRAR_VERSION: 7.0.9
+  UNRAR_REV: 2d5ca9c3701925ecfcb097d263158adf911b23dd
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

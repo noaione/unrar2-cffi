@@ -1,9 +1,13 @@
 #include "raros.hpp"
 #include "dll.hpp"
+#include "version.hpp"
 
 // same as UNRARCALLBACK but with a void * UserData to avoid tricky castings on the python side
 typedef int (CALLBACK *UNRARCALLBACKPtr)(UINT msg,void * UserData,LPARAM P1,LPARAM P2);
 void   PASCAL RARSetCallbackPtr(HANDLE hArcData,UNRARCALLBACKPtr Callback,void * UserData);
+
+// Wraps RARVER_MAJOR, RARVER_MINOR, RARVER_BETA
+void RARGetUnrarVersionCallback(int *major, int *minor, int *patch);
 
 enum CONSTANTS {
     C_RAR_OM_EXTRACT = RAR_OM_EXTRACT,

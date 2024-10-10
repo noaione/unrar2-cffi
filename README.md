@@ -9,7 +9,7 @@ functionality through a [`zipfile`](https://docs.python.org/3/library/zipfile.ht
 
 This is a fork/modified version of [unrar-cffi](https://pypi.org/project/unrar-cffi/) that supports modern Python starting from 3.9+
 
-This build also target unrar 6.x instead of unrar 5.x from the original unrar-cffi project.
+This build also target unrar 7.x instead of unrar 5.x from the original unrar-cffi project.
 
 ## Difference
 
