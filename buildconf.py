@@ -78,14 +78,14 @@ class BuildUnrarCommand(Command):
             # Not Windows
             return
 
-        log.info("patching unrar vcxproj for Windows (retargeting to v143)")
+        log.info("running patches for windows")
         ROOT_DIR = Path(__file__).absolute().parent
         patch_files = [
             ROOT_DIR / "patches" / "0001-build-retarget-to-vs2022-10.0-v143.patch"
         ]
 
         for patch in patch_files:
-            log.info(f"applying patch: {patch}")
+            log.info(f"applying patch: {patch.stem}")
             subprocess.run(["git", "apply", str(patch)])
 
     def _macos_patch(self):
@@ -93,28 +93,16 @@ class BuildUnrarCommand(Command):
         if rel == "":
             # Not macOS
             return
-        log.info("patching unrar library makefile for macOS (explicit c++11)")
+
+        log.info("running patches for macOS")
         ROOT_DIR = Path(__file__).absolute().parent
-        makefile = ROOT_DIR / UNRARSRC / "makefile"
-        makefile_data = makefile.read_text().splitlines()
-        cxx_pos = None
-        for i, line in enumerate(makefile_data):
-            if line.startswith("CXXFLAGS="):
-                # Get CXXFLAGS= line
-                cxx_pos = i
-                break
+        patch_files = [
+            ROOT_DIR / "patches" / "0002-build-fix-macos-build.patch"
+        ]
 
-        if cxx_pos is None:
-            raise RuntimeError("makefile CXXFLAGS not found")
-
-        # Add -std=c++11 to CXXFLAGS
-        cxx_flags = makefile_data[cxx_pos].split("=")[1]
-        cxx_flags = f"-std=c++11 {cxx_flags}"
-        makefile_data[cxx_pos] = f"CXXFLAGS={cxx_flags}"
-        # Save
-        log.info(f"modified cxxflags to: {cxx_flags}")
-        log.info("saving modified makefile")
-        makefile.write_text("\n".join(makefile_data))
+        for patch in patch_files:
+            log.info(f"applying patch: {patch}")
+            subprocess.run(["git", "apply", str(patch)])
 
     def run(self):
         log.info("compiling unrar library")
