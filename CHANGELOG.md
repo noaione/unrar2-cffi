@@ -2,6 +2,19 @@
 
 The following file contains all the changes made in unrar2-cffi, not including changes from unrar-cffi
 
+## Unreleased
+### New Features
+- Support opening password protected rar file
+Similar to the other ZipFile-like API, you can pass a `pwd` parameter to open with password.
+
+### Breaking Changes
+- Reworked error handling, there is now a new error called `RarFileError` which will be raised on any error.
+
+### Build
+- Bump dependencies
+- Support Python 3.13 (and the free-threaded/no GIL version)
+- 
+
 ## [0.3.1] 2024-03-21
 ### Build
 - Fix build for sdist
