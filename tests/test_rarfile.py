@@ -3,7 +3,7 @@ from pathlib import Path
 from pytest import fixture, raises
 
 from unrar.cffi.rarfile import RarFile, RarFileError, RarInfo, is_rarfile
-from unrar.cffi.unrarlib import FLAGS_BAD_PASSWORD, FLAGS_MISSING_PASSWORD
+from unrar.cffi.unrarlib import FLAGS_BAD_PASSWORD, FLAGS_MISSING_PASSWORD, BadRarPassword
 
 CURRENT_DIR = Path(__file__).absolute().parent
 
@@ -91,6 +91,7 @@ def info_test_file_txt():
         "extract_version": 29,
         "flag_bits": 0,
         "CRC": 2911469160,
+        "crc_hex": "AD897E68",
         "compress_size": 29,
         "file_size": 17,
     }
@@ -106,6 +107,7 @@ def info_test_file2_txt():
         "extract_version": 29,
         "flag_bits": 0,
         "CRC": 1864074135,
+        "crc_hex": "6F1B8397",
         "compress_size": 22,
         "file_size": 22,
     }
@@ -146,12 +148,14 @@ def test_rar_with_password():
 
 
 def test_rar_bad_password():
-    with raises(RarFileError) as exc_info:
-        RarFile(CURRENT_DIR / "test_rar_pwd.rar", pwd="wrong")
+    with raises(BadRarPassword) as exc_info:
+        x = RarFile(CURRENT_DIR / "test_rar_pwd.rar", pwd="wrong")
+        x.read("test_file.txt")
     assert exc_info.value.code == FLAGS_BAD_PASSWORD
 
 
 def test_rar_missing_pass():
-    with raises(RarFileError) as exc_info:
-        RarFile(CURRENT_DIR / "test_rar_pwd.rar")
+    with raises(BadRarPassword) as exc_info:
+        x = RarFile(CURRENT_DIR / "test_rar_pwd.rar")
+        x.read("test_file.txt")
     assert exc_info.value.code == FLAGS_MISSING_PASSWORD

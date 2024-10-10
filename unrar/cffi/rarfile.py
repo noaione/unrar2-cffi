@@ -51,7 +51,7 @@ class RarFile:
     comment: bytes
     infos: t.OrderedDict[str, RarInfo]
 
-    __slots__ = ("infos", "_filename", "comment")
+    __slots__ = ("infos", "_filename", "_pwd", "comment")
 
     def __init__(self, filename: "PathLike", *, pwd: t.Optional[str] = None) -> None:
         """Load a RAR archive from a file specified by the filename.
@@ -61,6 +61,8 @@ class RarFile:
         filename: :class:`os.PathLike`
             The filename of the RAR archive to load, can be a
             :class:`str` or :class:`pathlib.Path`.
+        pwd: :class:`str`, optional
+            The password to decrypt the RAR archive.
 
         Raises
         ------
@@ -69,6 +71,7 @@ class RarFile:
         """
 
         self._filename: "PathLike" = filename
+        self._pwd = pwd
 
         self.comment: bytes = b""
         self.infos: t.OrderedDict[str, RarInfo] = OrderedDict()
@@ -86,6 +89,11 @@ class RarFile:
     def filename(self) -> str:
         """:class:`str`: The filename of the RAR archive."""
         return str(self._filename)
+
+    @property
+    def pwd(self) -> t.Optional[str]:
+        """:class:`str`: The password to decrypt the RAR archive."""
+        return self._pwd
 
     def namelist(self) -> t.List[str]:
         """:class:`list`: Return a list of archive members by name."""
@@ -129,6 +137,8 @@ class RarFile:
 
         Raises
         ------
+        :class:`BadRarFile`
+            If the RAR archive is invalid, or the password is incorrect.
         :class:`ValueError`
             If the archive member cannot be found in the RAR archive.
         """
@@ -155,7 +165,7 @@ class RarFile:
         member = (
             file_or_info.filename if isinstance(file_or_info, RarInfo) else file_or_info
         )
-        with RarArchive.open_for_processing(self.filename) as rar:
+        with RarArchive.open_for_processing(self.filename, pwd=self.pwd) as rar:
             for header in rar.iterate_headers():
                 if header.FileNameW == member:
                     callback = InMemoryCollector()
@@ -167,7 +177,7 @@ class RarFile:
         )
 
     def testrar(self) -> t.Optional[str]:
-        with RarArchive.open_for_processing(self.filename) as rar:
+        with RarArchive.open_for_processing(self.filename, pwd=self.pwd) as rar:
             for header in rar.iterate_headers():
                 try:
                     header.test()
@@ -236,6 +246,11 @@ class RarInfo:
     def CRC(self) -> int:
         """:class:`int`: The CRC of the archive member."""
         return self._header.FileCRC
+
+    @property
+    def crc_hex(self) -> str:
+        """:class:`str`: The CRC of the archive member in hexadecimal format."""
+        return "%08X" % self.CRC
 
     @property
     def flag_bits(self) -> int:

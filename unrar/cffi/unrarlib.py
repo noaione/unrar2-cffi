@@ -52,16 +52,18 @@ class RarArchive:
     def __init__(self, filename: "PathLike", mode: int, *, pwd: Optional[str] = None) -> None:
         self.comment = ""
         archive = RAROpenArchiveDataEx(filename, mode)
-        if pwd is not None and pwd:
-            archive.set_password(pwd)
         self.handle = RAROpenArchiveEx(archive.value)
+        self._password_set = bool(pwd)
+        self._filename  = filename
+        if self._password_set:
+            RARSetPassword(self.handle, pwd.encode("ascii"))
         if archive.value.OpenResult != C_ERAR_SUCCESS:
-            if archive.value.OpenResult == C_ERAR_MISSING_PASSWORD:
+            if archive.value.OpenResult == FLAGS_MISSING_PASSWORD:
                 raise BadRarPassword(
                     archive.value.OpenResult,
                     "Cannot open {}: Missing password".format(filename),
                 )
-            elif archive.value.OpenResult == C_ERAR_BAD_PASSWORD:
+            elif archive.value.OpenResult == FLAGS_BAD_PASSWORD:
                 raise BadRarPassword(
                     archive.value.OpenResult,
                     "Cannot open {}: Bad password".format(filename),
@@ -82,11 +84,19 @@ class RarArchive:
         result = RARCloseArchive(self.handle)
         assert result == C_ERAR_SUCCESS
 
+    def __repr__(self):
+        attributes = {
+            "pwd": self._password_set,
+            "comment": self.comment,
+        }
+        merged_str = ", ".join(f"{k}={v!r}" for k, v in attributes.items())
+        return "<RarArchive: {} {}>".format(self._filename, merged_str)
+
     def iterate_headers(self) -> Generator["RarHeader", Any, None]:
         header_data = RARHeaderDataEx()
         res = RARReadHeaderEx(self.handle, header_data)
         while res == C_ERAR_SUCCESS:
-            yield RarHeader(self.handle, header_data)
+            yield RarHeader(self, header_data)
             header_data = RARHeaderDataEx()
             res = RARReadHeaderEx(self.handle, header_data)
 
@@ -104,8 +114,9 @@ def null_callback(*args):
 
 
 class RarHeader:
-    def __init__(self, handle, headerDataEx):
-        self.handle = handle
+    def __init__(self, archive, headerDataEx):
+        self.handle = archive.handle
+        self._is_password = archive._password_set
         self.headerDataEx = headerDataEx
 
     @property
@@ -167,7 +178,18 @@ class RarHeader:
         result = RARProcessFileW(self.handle, C_RAR_TEST, ffi.NULL, ffi.NULL)
         RARSetCallbackPtr(self.handle, ffi.NULL, ffi.NULL)
         if result != C_ERAR_SUCCESS:
-            raise BadRarFile(result, "Rarfile corrupted: error code is %d" % result)
+            if result == FLAGS_BAD_PASSWORD or (result == FLAGS_MISSING_PASSWORD and self._is_password):
+                raise BadRarPassword(
+                    result,
+                    "Cannot open {}: Bad password".format(self.FileNameW),
+                )
+            elif result == FLAGS_MISSING_PASSWORD and not self._is_password:
+                raise BadRarPassword(
+                    result,
+                    "Cannot open {}: Password protected".format(self.FileNameW),
+                )
+            else:
+                raise BadRarFile(result, "Rarfile corrupted: error code is %d" % result)
 
 
 class BadRarFile(Exception):
@@ -198,10 +220,6 @@ class RAROpenArchiveDataEx:
 
     def value(self):
         return self.value
-
-    def set_password(self, password: str) -> None:
-        password_ffi = ffi.new("char[]", password.encode("ascii"))
-        RARSetPassword(self.value, password_ffi)
 
 
 def RARHeaderDataEx():
