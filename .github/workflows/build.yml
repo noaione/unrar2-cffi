@@ -49,7 +49,7 @@ jobs:
       - uses: actions/upload-artifact@184d73b71b93c222403b2e7f1ffebe4508014249
         with:
           name: unrar2-cffi-sdist
-          path: ./dist/unrar2-cffi-*.tar.gz
+          path: ./dist/unrar2_cffi-*.tar.gz
 
   build_wheels:
     strategy:
