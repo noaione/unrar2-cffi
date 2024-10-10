@@ -42,17 +42,17 @@ The package implements the following `RarFile` functions:
  2. Use from code:
 
 ```python
-    from unrar.cffi import rarfile
+from unrar.cffi import rarfile
 
-    rar = rarfile.RarFile('sample.rar')
+rar = rarfile.RarFile('sample.rar')
 
-    assert rar.testrar() == None
+assert rar.testrar() == None
 
-    for filename in rar.namelist():
-        info = rar.getinfo(filename)
-        print("Reading {}, {}, {} bytes ({} bytes compressed)".format(info.filename, info.date_time, info.file_size, info.compress_size))
-        data = rar.read(filename)
-        print("\t{}...\n".format(data[:100]))
+for filename in rar.namelist():
+    info = rar.getinfo(filename)
+    print("Reading {}, {}, {} bytes ({} bytes compressed)".format(info.filename, info.date_time, info.file_size, info.compress_size))
+    data = rar.read(filename)
+    print("\t{}...\n".format(data[:100]))
 ```
 
 ## Build

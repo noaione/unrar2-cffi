@@ -15,6 +15,9 @@ on:
 env:
   UNRAR_VERSION: 6.2.8
   UNRAR_REV: df15c8c3c9f4105d3501bc477e80ac6b8e227677
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build_sdist:
@@ -83,7 +86,7 @@ jobs:
 
       - name: Setup MSVC (x64)
         if: runner.os == 'Windows' && matrix.buildplat[1] == 'win_amd64'
-        uses: TheMrMilchmann/setup-msvc-dev@a749225d5c289381e92469bceeb096b8754d28a3
+        uses: TheMrMilchmann/setup-msvc-dev@fb19abb8a41b3cf0340f5d1be17d420309232be6
         with:
           arch: x64
           sdk: "10.0.22621.0"
@@ -91,7 +94,7 @@ jobs:
 
       - name: Setup MSVC (x86)
         if: runner.os == 'Windows' && matrix.buildplat[1] == 'win32'
-        uses: TheMrMilchmann/setup-msvc-dev@a749225d5c289381e92469bceeb096b8754d28a3
+        uses: TheMrMilchmann/setup-msvc-dev@fb19abb8a41b3cf0340f5d1be17d420309232be6
         with:
           arch: x86
           sdk: "10.0.22621.0"
