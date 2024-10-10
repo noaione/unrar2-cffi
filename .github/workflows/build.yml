@@ -21,9 +21,11 @@ jobs:
     name: Build sdist
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        name: Install Python
+      - name: Checkout
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+
+      - name: Install Python
+        uses: actions/setup-python@19dfb7b659fa9e60c2f89c33335ab5f6f1792b6e
         with:
           python-version: "3.10"
 
@@ -41,7 +43,7 @@ jobs:
           python -m build --sdist .
           ls -l dist
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@184d73b71b93c222403b2e7f1ffebe4508014249
         with:
           name: unrar2-cffi-sdist
           path: ./dist/unrar2-cffi-*.tar.gz
@@ -52,9 +54,9 @@ jobs:
       matrix:
         # Copied from numpy
         buildplat:
-          - [ubuntu-22.04, manylinux_x86_64]
-          - [ubuntu-22.04, musllinux_x86_64]
-          - [macos-12, macosx_x86_64]
+          - [ubuntu-24.04, manylinux_x86_64]
+          - [ubuntu-24.04, musllinux_x86_64]
+          - [macos-13, macosx_x86_64]
           - [macos-14, macosx_arm64]
           - [windows-2022, win_amd64]
           - [windows-2022, win32]
@@ -65,22 +67,22 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@19dfb7b659fa9e60c2f89c33335ab5f6f1792b6e
         with:
           python-version: "3.10"
 
       - name: Set up QEMU
         if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@719c55c4a5a93233ce33aa9366dc90396d60e0ee
         with:
           platforms: all
 
       - name: Setup MSVC (x64)
         if: runner.os == 'Windows' && matrix.buildplat[1] == 'win_amd64'
-        uses: TheMrMilchmann/setup-msvc-dev@v3
+        uses: TheMrMilchmann/setup-msvc-dev@a749225d5c289381e92469bceeb096b8754d28a3
         with:
           arch: x64
           sdk: "10.0.22621.0"
@@ -88,7 +90,7 @@ jobs:
 
       - name: Setup MSVC (x86)
         if: runner.os == 'Windows' && matrix.buildplat[1] == 'win32'
-        uses: TheMrMilchmann/setup-msvc-dev@v3
+        uses: TheMrMilchmann/setup-msvc-dev@a749225d5c289381e92469bceeb096b8754d28a3
         with:
           arch: x86
           sdk: "10.0.22621.0"
@@ -102,7 +104,7 @@ jobs:
           cd ..
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.17.0
+        uses: pypa/cibuildwheel@7940a4c0e76eb2030e473a5f864f291f63ee879b
         env:
           CIBW_PRERELEASE_PYTHONS: True
           CIBW_BUILD: "*-${{ matrix.buildplat[1] }}"
@@ -112,6 +114,7 @@ jobs:
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: "pytest {project}/tests -vvv"
           CIBW_BUILD_VERBOSITY: 1
+          CIBW_FREE_THREADED_SUPPORT: 1
 
       - name: Move wheels
         run: |
@@ -119,7 +122,7 @@ jobs:
           mv wheelhouse/*.whl dist/
 
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@184d73b71b93c222403b2e7f1ffebe4508014249
         with:
           name: unrar2-cffi-${{ matrix.buildplat[1] }}
           path: |
@@ -134,29 +137,29 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@19dfb7b659fa9e60c2f89c33335ab5f6f1792b6e
         with:
           python-version: "3.10"
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d0ce8fd1167ed839810201de977912a090ab10a7
         with:
           path: dist
           pattern: unrar2-cffi-*
           merge-multiple: true
 
       - name: Publish PyPi Test
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@f7600683efdcb7656dec5b29656edb7bc586e597
         with:
           user: __token__
           password: ${{ secrets.PYPI_TEST_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
 
       - name: Publish PyPi
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@f7600683efdcb7656dec5b29656edb7bc586e597
         with:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN }}
