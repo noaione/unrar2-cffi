@@ -88,26 +88,8 @@ class BuildUnrarCommand(Command):
             log.info(f"applying patch: {patch.stem}")
             subprocess.run(["git", "apply", str(patch)])
 
-    def _macos_patch(self):
-        rel, _, _ = platform.mac_ver()
-        if rel == "":
-            # Not macOS
-            return
-
-        log.info("running patches for macOS")
-        ROOT_DIR = Path(__file__).absolute().parent
-        patch_files = [
-            ROOT_DIR / "patches" / "0002-build-fix-macos-build.patch"
-        ]
-
-        for patch in patch_files:
-            log.info(f"applying patch: {patch}")
-            subprocess.run(["git", "apply", str(patch)])
-
     def run(self):
         log.info("compiling unrar library")
-        # In macOS, clang would need an explicit -std=c++11 flag
-        self._macos_patch()
         # In Windows, we need to retarget the project to v143
         self._windows_patch()
         subprocess.check_call(BUILD_CMD)
