@@ -5,4 +5,4 @@ from __future__ import annotations
 from .rarfile import *
 from .unrarlib import *
 
-__version__ = "0.3.2-dev"
+__version__ = "0.4.0"

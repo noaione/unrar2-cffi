@@ -2,8 +2,8 @@
 name = "unrar2-cffi"
 description = "Read RAR file from python -- cffi edition"
 authors = [
-    {name = "Davide Romanini", email = "davide.romanini@gmail.com"},
     {name = "noaione", email = "noaione@n4o.xyz"},
+    {name = "Davide Romanini", email = "davide.romanini@gmail.com"},
 ]
 readme = "README.md"
 license = { text = "Apache License 2.0" }

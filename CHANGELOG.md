@@ -3,6 +3,10 @@
 The following file contains all the changes made in unrar2-cffi, not including changes from unrar-cffi
 
 ## Unreleased
+
+Nothing yet!
+
+## [0.4.0] 2024-10-10
 ### New Features
 - Support opening password protected rar file
 Similar to the other ZipFile-like API, you can pass a `pwd` parameter to open with password.
