@@ -118,6 +118,7 @@ jobs:
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: "pytest {project}/tests -vvv"
           CIBW_BUILD_VERBOSITY: 1
+          CIBW_ARCHS_WINDOWS: "AMD64 x86 ARM64"
           # CIBW_FREE_THREADED_SUPPORT: 1
 
       - name: Move wheels
