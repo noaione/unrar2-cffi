@@ -6,6 +6,11 @@ The following file contains all the changes made in unrar2-cffi, not including c
 
 Nothing yet!
 
+## [0.4.1] 2025-05-25
+### Build
+- Fix issues with testing with source distribution.
+- Fix Windows wheels to use the correct unrar version.
+
 ## [0.4.0] 2024-10-10
 ### New Features
 - Support opening password protected rar file
