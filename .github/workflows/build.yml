@@ -162,7 +162,7 @@ jobs:
           merge-multiple: true
 
       - name: Publish PyPi
-        uses: pypa/gh-action-pypi-publish@f7600683efdcb7656dec5b29656edb7bc586e597
+        uses: pypa/gh-action-pypi-publish@e9ccbe5a211ba3e8363f472cae362b56b104e796
 
       - name: Create changelog
         id: prepare-change
