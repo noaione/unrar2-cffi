@@ -24,3 +24,5 @@ unrar/cffi/_unrarlib*
 Release/*
 
 .DS_Store
+
+CHANGELOG-GENERATED.md

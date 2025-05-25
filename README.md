@@ -58,7 +58,6 @@ for filename in rar.namelist():
 ## Build
 
 ### Requirements
-
 Linux/macOS:
  * gcc compiler suite (`build-essential` packages should be enough)
  * docker (only for `buildmanylinux`)
@@ -68,25 +67,11 @@ Windows:
  * Visual C++ compiler suite
  * `vswhere`
 
-### Compile and test
+### Build
+1. Run `pip install -r requirements.txt` to install the build dependencies.
+2. If you are on Windows, make sure you use the VS2022 Build Tools
+3. Run `pip install .` to build the package.
 
- 1. `./build.sh init`
- 2. `./build.sh build`
- 3. `./build.sh test`
-
-If you have docker installed, you can build all the [manylinux](https://github.com/pypa/manylinux) 
-wheels:
-
- 1. `./build.sh within [manylinux docker image] buildmanylinux`
- 2. `./build.sh within [manylinux docker image] testmanylinux`
-
-By deafult the image `quay.io/pypa/manylinux2010_x86_64` will be used.
-Use `$DOCKER_IMAGE` and `$PLAT` variables to customize the build.
-
-### Problems
-
+### Workarounds
 Windows:
 * If you need to retarget solution, apply the `0001-build-retarget-to-vs2022-10.0-v143.patch` that will utilize the latest version.
-
-macOS:
-* The macOS version are monkeypatching unrar 6.x makefile to utilize C++11
