@@ -163,3 +163,24 @@ jobs:
 
       - name: Publish PyPi
         uses: pypa/gh-action-pypi-publish@f7600683efdcb7656dec5b29656edb7bc586e597
+
+      - name: Create changelog
+        id: prepare-change
+        run: |
+          python3 tools/create_changelog.py
+          # Fetch git tag contents subject
+          VERSION_SUBJ=$(git tag -l --format='%(contents:subject)' ${{ github.ref }})
+          echo "version_subject=$VERSION_SUBJ" >> "$GITHUB_OUTPUT"
+        env:
+          VERSION: ${{ github.ref }}
+
+      - name: Release
+        uses: softprops/action-gh-release@67b6c38432c171b8aa64dc6f3f152d12da2d99fa
+        with:
+          files: |
+            dist/*
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body_path: CHANGELOG-GENERATED.md
+          name: ${{ steps.prepare-change.outputs.version_subject }}
