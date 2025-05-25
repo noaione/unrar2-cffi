@@ -144,6 +144,9 @@ jobs:
     permissions:
       # IMPORTANT: this permission is mandatory for trusted publishing
       id-token: write
+      # Used for publishing to GH releases
+      contents: write
+      discussions: write
 
     steps:
       - name: Checkout
