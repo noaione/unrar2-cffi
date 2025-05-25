@@ -5,3 +5,4 @@ include unrar/cffi/unrarlib_ext.h
 include unrar/cffi/unrarlib_py.h
 recursive-include unrarsrc *
 recursive-include patches *
+recursive-include tests *

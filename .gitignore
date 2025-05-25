@@ -22,3 +22,5 @@ __pycache__
 *.lib
 unrar/cffi/_unrarlib*
 Release/*
+
+.DS_Store
