@@ -6,13 +6,12 @@ authors = [
     {name = "Davide Romanini", email = "davide.romanini@gmail.com"},
 ]
 readme = "README.md"
-license = { text = "Apache License 2.0" }
+license = "Apache-2.0"
 keywords = ["rar", "unrar", "archive", "cffi"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Topic :: Software Development :: Libraries",
-    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
