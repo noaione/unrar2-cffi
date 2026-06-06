@@ -2,6 +2,10 @@
 
 The following file contains all the changes made in unrar2-cffi, not including changes from unrar-cffi
 
+## Unreleased
+
+Nothing yet.
+
 ## [0.5.0] 2026-06-07
 ### Breaking Changes
 - Drop Python 3.9, add Python 3.14 (+ free-threaded)
