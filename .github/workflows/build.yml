@@ -25,10 +25,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
 
       - name: Install Python
-        uses: actions/setup-python@19dfb7b659fa9e60c2f89c33335ab5f6f1792b6e
+        uses: actions/setup-python@c8813ba1bc76ebf779b911ad8ffccbf2e449cb48
         with:
           python-version: "3.10"
 
@@ -46,7 +46,7 @@ jobs:
           python -m build --sdist .
           ls -l dist
 
-      - uses: actions/upload-artifact@184d73b71b93c222403b2e7f1ffebe4508014249
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: unrar2-cffi-sdist
           path: ./dist/unrar2_cffi-*.tar.gz
@@ -62,7 +62,6 @@ jobs:
           - [macos-15-intel, macosx_x86_64]
           - [macos-26, macosx_arm64]
           - [windows-2025, win_amd64]
-          - [windows-2025, win32]
 
     runs-on: ${{ matrix.buildplat[0] }}
     env:
@@ -70,22 +69,22 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
 
       - name: Setup Python
-        uses: actions/setup-python@19dfb7b659fa9e60c2f89c33335ab5f6f1792b6e
+        uses: actions/setup-python@c8813ba1bc76ebf779b911ad8ffccbf2e449cb48
         with:
           python-version: "3.10"
 
       - name: Set up QEMU
         if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@719c55c4a5a93233ce33aa9366dc90396d60e0ee
+        uses: docker/setup-qemu-action@259a565a6f30a57c28f9ea913f2d359b43ff5fc9
         with:
           platforms: all
 
       - name: Setup MSVC (x64)
         if: runner.os == 'Windows' && matrix.buildplat[1] == 'win_amd64'
-        uses: TheMrMilchmann/setup-msvc-dev@fb19abb8a41b3cf0340f5d1be17d420309232be6
+        uses: TheMrMilchmann/setup-msvc-dev@69e5c0d2fd2194a8d4d5bfa6f152d29a38bf0a72
         with:
           arch: x64
           sdk: "10.0.22621.0"
@@ -93,7 +92,7 @@ jobs:
 
       - name: Setup MSVC (x86)
         if: runner.os == 'Windows' && matrix.buildplat[1] == 'win32'
-        uses: TheMrMilchmann/setup-msvc-dev@fb19abb8a41b3cf0340f5d1be17d420309232be6
+        uses: TheMrMilchmann/setup-msvc-dev@69e5c0d2fd2194a8d4d5bfa6f152d29a38bf0a72
         with:
           arch: x86
           sdk: "10.0.22621.0"
@@ -110,7 +109,7 @@ jobs:
         shell: bash
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@7940a4c0e76eb2030e473a5f864f291f63ee879b
+        uses: pypa/cibuildwheel@866ae747818f794bbaf572f7a651c4296dbfb33e
         env:
           CIBW_PRERELEASE_PYTHONS: True
           CIBW_BUILD: "*-${{ matrix.buildplat[1] }}"
@@ -129,7 +128,7 @@ jobs:
         shell: bash
 
       - name: Upload wheels
-        uses: actions/upload-artifact@184d73b71b93c222403b2e7f1ffebe4508014249
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: unrar2-cffi-${{ matrix.buildplat[1] }}
           path: |
@@ -150,22 +149,22 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
 
       - name: Setup Python
-        uses: actions/setup-python@19dfb7b659fa9e60c2f89c33335ab5f6f1792b6e
+        uses: actions/setup-python@c8813ba1bc76ebf779b911ad8ffccbf2e449cb48
         with:
           python-version: "3.10"
 
       - name: Download artifacts
-        uses: actions/download-artifact@d0ce8fd1167ed839810201de977912a090ab10a7
+        uses: actions/download-artifact@484a0b528fb4d7bd804637ccb632e47a0e638317
         with:
           path: dist
           pattern: unrar2-cffi-*
           merge-multiple: true
 
       - name: Publish PyPi
-        uses: pypa/gh-action-pypi-publish@e9ccbe5a211ba3e8363f472cae362b56b104e796
+        uses: pypa/gh-action-pypi-publish@ba38be9e461d3875417946c167d0b5f3d385a247
 
       - name: Create changelog
         id: prepare-change
@@ -178,7 +177,7 @@ jobs:
           VERSION: ${{ github.ref }}
 
       - name: Release
-        uses: softprops/action-gh-release@67b6c38432c171b8aa64dc6f3f152d12da2d99fa
+        uses: softprops/action-gh-release@3efcac8951299998593f871640ea8059d6818655
         with:
           files: |
             dist/*
