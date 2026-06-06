@@ -87,8 +87,8 @@ jobs:
         uses: TheMrMilchmann/setup-msvc-dev@79dac248aac9d0059f86eae9d8b5bfab4e95e97c
         with:
           arch: x64
-          sdk: "10.0.22621.0"
-          toolset: 14.0
+          sdk: "10.0.26100.0"
+          toolset: 14.3
         env:
           VSCMD_DEBUG: 3
 

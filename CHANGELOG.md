@@ -6,6 +6,7 @@ The following file contains all the changes made in unrar2-cffi, not including c
 ### Breaking Changes
 - Drop Python 3.9, add Python 3.14 (+ free-threaded)
 - Drop Windows 32-bit build
+- Retarget VS to `10.0.26100.0`
 
 ### Build
 - Bump to unrar 7.2.6

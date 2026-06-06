@@ -9,4 +9,4 @@ def test_rar_version() -> None:
 
 def test_unrar_version():
     version = get_unrar_version()
-    assert version == (7, 1, 0)
+    assert version == (7, 21, 0)
