@@ -7,7 +7,7 @@
 unrar2-cffi is a python extension that exposes [unrar library](https://rarlab.com/rar_add.htm)
 functionality through a [`zipfile`](https://docs.python.org/3/library/zipfile.html)-like interface.
 
-This is a fork/modified version of [unrar-cffi](https://pypi.org/project/unrar-cffi/) that supports modern Python starting from 3.9+
+This is a fork/modified version of [unrar-cffi](https://pypi.org/project/unrar-cffi/) that supports modern Python starting from 3.10-3.14 (incl. free-threading)
 
 This build also target unrar 7.x instead of unrar 5.x from the original unrar-cffi project.
 

@@ -84,17 +84,9 @@ jobs:
 
       - name: Setup MSVC (x64)
         if: runner.os == 'Windows' && matrix.buildplat[1] == 'win_amd64'
-        uses: TheMrMilchmann/setup-msvc-dev@69e5c0d2fd2194a8d4d5bfa6f152d29a38bf0a72
+        uses: TheMrMilchmann/setup-msvc-dev@79dac248aac9d0059f86eae9d8b5bfab4e95e97c
         with:
           arch: x64
-          sdk: "10.0.22621.0"
-          toolset: 14.0
-
-      - name: Setup MSVC (x86)
-        if: runner.os == 'Windows' && matrix.buildplat[1] == 'win32'
-        uses: TheMrMilchmann/setup-msvc-dev@69e5c0d2fd2194a8d4d5bfa6f152d29a38bf0a72
-        with:
-          arch: x86
           sdk: "10.0.22621.0"
           toolset: 14.0
         env:
